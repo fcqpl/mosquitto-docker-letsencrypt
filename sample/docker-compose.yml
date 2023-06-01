@@ -1,17 +1,22 @@
 version: '2'
+networks:
+  mqtt-net:
+    driver: bridge
+
 services:
   mqtt:
-    image: bitrox/mqtt
+    #image: bitrox/alpine-mosquitto-certbot
+    build: mosquitto-docker-letsencrypt
     networks:
-      - backend-net
+      - mqtt-net
     ports:
       - 1883:1883
       - 8083:8083
       - 8883:8883
-      - 8116:80
+      - 80:80
     environment:
-      - DOMAIN=mqtt.bitrox.io
-      - EMAIL=proxy@bitrox.io
+      - DOMAIN=mqtt.myserver.com
+      - EMAIL=myemail@myprovider.com
     volumes:
       - ./mosquitto/conf/:/mosquitto/conf
       - ./mosquitto/log/:/mosquitto/log
@@ -19,7 +24,3 @@ services:
       - ./scripts:/scripts
     container_name: mqtt
     restart: always
-networks:
-  backend-net:
-    external:
-      name: backend-net

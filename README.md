@@ -1,5 +1,13 @@
 # alpine-mosquitto-certbot
 
+## Changes
+- updated docker-compose.yml
+- updated python-alpine image from 2.7 to 3.9
+- updated certbot generation (unrecognized arguments: --standalone-supported-challenges http-01)
+
+
+## Original description
+
 An automated build that integrates the [Mosquitto MQTT server](https://mosquitto.org/) with [Certbot](https://certbot.eff.org/) on top of [Alpine linux](https://www.alpinelinux.org/).
 
 As the Internet of Things (IoT) world rapidly grows and evolves, developers need a simple and secure way to implement peer-to-peer and peer-to-server (backend) communications.  MQTT is a relatively simple message/queue-based protocol that provides exactly that. 
@@ -15,11 +23,16 @@ A straigtforward way of standing up a server is to use [docker-compose](https://
 
 ```
 version: '2'
+networks:
+  mqtt-net:
+    driver: bridge
+
 services:
   mqtt:
-    image: bitrox/alpine-mosquitto-certbot
+    #image: bitrox/alpine-mosquitto-certbot
+    build: mosquitto-docker-letsencrypt
     networks:
-      - backend-net
+      - mqtt-net
     ports:
       - 1883:1883
       - 8083:8083
@@ -35,10 +48,6 @@ services:
       - ./scripts:/scripts
     container_name: mqtt
     restart: always
-networks:
-  backend-net:
-    external:
-      name: backend-net
 ```
 
 In this case, four ports are exposed, which we'll go over in more detail when describing how this configuration matches that of the mosquitto.conf file.  The first three ports are associated with Mosquitto, the forth port mapping (80:80) allows Certbot/LetsEncrypt to verify the DOMAIN.  Also shown in the yml file is a backend-net network, which you many or may not have implemented with your particular Docker environment (Docker networking is WAY beyond the scope of this discussion).
