@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Check to see if certs for the specified domain exist
-#	Attempt to retrieve certs if missing or
-#	if present attempt to renew them
+#       Attempt to retrieve certs if missing or
+#       if present attempt to renew them
 #
 #       WARNING:
-#		This script is called weekly from /etc/periodic/weekly/croncert.sh
+#               This script is called weekly from /etc/periodic/weekly/croncert.sh
 #
 #               Duing the weekly check, if certs are renewed,
 #               the mosquitto process is restarted, causing
@@ -15,7 +15,7 @@
 # will use --staging --test-cert for obtaining a cert and --dry-run for renewal
 # This allows the user to test out the configuration and connectivity for obtaining
 # certs without running into LetsEncrypt limits. It's advisable to define TESTCERT
-# when initially bringing up the container.  Once the logs (docker logs <containername>) 
+# when initially bringing up the container.  Once the logs (docker logs <containername>)
 # show that LetsEncrypt is working fine, then remove TESTCERT environment variable
 # to let this script obtain and manage the real certificates
 #
@@ -42,8 +42,6 @@ else
                                         --test-cert \
                                         --standalone \
                                         --agree-tos \
-                                        --standalone-supported-challenges http-01 \
-                                        -n \
                                         -d $DOMAIN \
                                         -m $EMAIL
                         else
@@ -51,8 +49,6 @@ else
                                 certbot certonly \
                                         --standalone \
                                         --agree-tos \
-                                        --standalone-supported-challenges http-01 \
-                                        -n \
                                         -d $DOMAIN \
                                         -m $EMAIL
                         fi
